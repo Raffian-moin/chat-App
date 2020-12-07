@@ -1,6 +1,6 @@
 <template>
 <div>
-	message item
+	{{message.user_id}}: {{message.message}}
 </div>
                     
 
@@ -11,6 +11,6 @@
 
 
     export default {
-
+    	props:['message']
     }
 </script>

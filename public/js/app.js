@@ -3428,7 +3428,36 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['rooms', 'currentRoom'],
+  data: function data() {
+    return {
+      selected: ''
+    };
+  },
+  created: function created() {
+    this.selected = this.currentRoom;
+  }
+});
 
 /***/ }),
 
@@ -3445,7 +3474,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ChatRoomSelection_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ChatRoomSelection.vue */ "./resources/js/Pages/Chat/ChatRoomSelection.vue");
 /* harmony import */ var _InputMessage_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./InputMessage.vue */ "./resources/js/Pages/Chat/InputMessage.vue");
 /* harmony import */ var _MessageContainer_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MessageContainer.vue */ "./resources/js/Pages/Chat/MessageContainer.vue");
-/* harmony import */ var _MessageItem_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./MessageItem.vue */ "./resources/js/Pages/Chat/MessageItem.vue");
 //
 //
 //
@@ -3467,7 +3495,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
+//
+//
+//
+//
+//
 
 
 
@@ -3477,8 +3509,7 @@ __webpack_require__.r(__webpack_exports__);
     AppLayout: _Layouts_AppLayout__WEBPACK_IMPORTED_MODULE_0__["default"],
     ChatRoomSelection: _ChatRoomSelection_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
     InputMessage: _InputMessage_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
-    MessageContainer: _MessageContainer_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
-    MessageItem: _MessageItem_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
+    MessageContainer: _MessageContainer_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   data: function data() {
     return {
@@ -3596,6 +3627,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _MessageItem_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MessageItem.vue */ "./resources/js/Pages/Chat/MessageItem.vue");
 //
 //
 //
@@ -3604,7 +3636,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    MessageItem: _MessageItem_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  props: ['messages']
+});
 
 /***/ }),
 
@@ -3625,7 +3669,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['message']
+});
 
 /***/ }),
 
@@ -47806,7 +47852,54 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_vm._v("\r\n\tchat room\r\n")])
+  return _c("div", { staticClass: "grid grid-cols-2" }, [
+    _c("div", { staticClass: "font-bold text-xl" }, [
+      _vm._v("\r\n\t\t" + _vm._s(_vm.selected.name) + "\r\n\t")
+    ]),
+    _vm._v(" "),
+    _c("div", [
+      _c(
+        "select",
+        {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.selected,
+              expression: "selected"
+            }
+          ],
+          staticClass: "float-right",
+          on: {
+            change: [
+              function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.selected = $event.target.multiple
+                  ? $$selectedVal
+                  : $$selectedVal[0]
+              },
+              function($event) {
+                return _vm.$emit("roomChanged", _vm.selected)
+              }
+            ]
+          }
+        },
+        _vm._l(_vm.rooms, function(room, index) {
+          return _c("option", { key: index, domProps: { value: room } }, [
+            _vm._v("\r\n\t\t " + _vm._s(room.name) + "\r\n\t\t ")
+          ])
+        }),
+        0
+      )
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -47844,7 +47937,22 @@ var render = function() {
                   staticClass:
                     "font-semibold text-xl text-gray-800 leading-tight"
                 },
-                [_vm._v("\n            Dashboard\n        ")]
+                [
+                  _vm.CurrentRoom.id
+                    ? _c("chat-room-selection", {
+                        attrs: {
+                          rooms: _vm.ChatRooms,
+                          currentRoom: _vm.CurrentRoom
+                        },
+                        on: {
+                          roomChanged: function($event) {
+                            return _vm.SetRoom($event)
+                          }
+                        }
+                      })
+                    : _vm._e()
+                ],
+                1
               )
             ]
           },
@@ -47860,13 +47968,16 @@ var render = function() {
             "div",
             { staticClass: "bg-white overflow-hidden shadow-xl sm:rounded-lg" },
             [
-              _c("chat-room-selection"),
+              _c("message-container", { attrs: { messages: _vm.Messages } }),
               _vm._v(" "),
-              _c("input-message", { attrs: { room: _vm.CurrentRoom } }),
-              _vm._v(" "),
-              _c("message-container"),
-              _vm._v(" "),
-              _c("message-item")
+              _c("input-message", {
+                attrs: { room: _vm.CurrentRoom },
+                on: {
+                  messageSent: function($event) {
+                    return _vm.GetMessages()
+                  }
+                }
+              })
             ],
             1
           )
@@ -47975,7 +48086,21 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_vm._v("\r\n\tmessage container\r\n")])
+  return _c("div", { staticClass: "h-96 w-fill" }, [
+    _c(
+      "div",
+      { staticClass: "h-full p-2 flex flex-col-reverse overflow-scroll" },
+      _vm._l(_vm.messages, function(message, index) {
+        return _c(
+          "div",
+          { key: index },
+          [_c("message-item", { attrs: { message: message } })],
+          1
+        )
+      }),
+      0
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -47999,7 +48124,15 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_vm._v("\r\n\tmessage item\r\n")])
+  return _c("div", [
+    _vm._v(
+      "\r\n\t" +
+        _vm._s(_vm.message.user_id) +
+        ": " +
+        _vm._s(_vm.message.message) +
+        "\r\n"
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
