@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ChatMessages;
 use App\Models\ChatRoom;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 
 
